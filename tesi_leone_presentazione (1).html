@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apprendimento Creativo nella Geometria — Diana Leone</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a2e;
+  --gold:#c8860a;
+  --gold-light:#f0c040;
+  --terracotta:#b04a2a;
+  --sage:#2d6a4f;
+  --cream:#faf7f2;
+  --cream-dark:#f0ebe0;
+  --muted:#6b6560;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;transition:background .3s,box-shadow .3s}
+nav.scrolled{background:rgba(250,247,242,0.95);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(0,0,0,.07)}
+.nav-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--ink);opacity:.7;letter-spacing:.05em}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gold)}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--terracotta));z-index:200;transition:width .1s}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;place-items:center;position:relative;overflow:hidden;background:var(--ink)}
+.hero-bg-shapes{position:absolute;inset:0;pointer-events:none}
+.geo-shape{position:absolute;opacity:0;animation:floatIn 1.2s forwards}
+.hero-content{position:relative;z-index:2;text-align:center;padding:2rem;max-width:900px}
+.hero-badge{display:inline-block;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-light);border:1px solid rgba(200,134,10,.4);padding:.4rem 1.2rem;border-radius:20px;margin-bottom:2.5rem;opacity:0;animation:fadeUp .8s .3s forwards}
+.hero h1{font-family:var(--serif);font-size:clamp(2.2rem,5vw,4rem);font-weight:300;color:#fff;line-height:1.15;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .5s forwards}
+.hero h1 em{font-style:italic;color:var(--gold-light)}
+.hero-meta{font-size:.85rem;color:rgba(255,255,255,.5);letter-spacing:.05em;opacity:0;animation:fadeUp .8s .7s forwards;margin-bottom:3rem}
+.hero-meta span{color:rgba(255,255,255,.8)}
+.hero-scroll{opacity:0;animation:fadeUp .8s .9s forwards;display:flex;flex-direction:column;align-items:center;gap:.5rem;color:rgba(255,255,255,.4);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase}
+.scroll-arrow{width:24px;height:24px;border-right:1px solid rgba(255,255,255,.3);border-bottom:1px solid rgba(255,255,255,.3);transform:rotate(45deg);animation:bounce 2s infinite}
+
+/* SECTIONS common */
+section{padding:7rem 2rem;position:relative;overflow:hidden}
+.container{max-width:1100px;margin:0 auto}
+.section-label{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;opacity:0;transform:translateY(20px);transition:all .7s}
+.section-label.visible{opacity:1;transform:none}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:300;line-height:1.2;margin-bottom:1.5rem;opacity:0;transform:translateY(25px);transition:all .7s .1s}
+.section-title.visible{opacity:1;transform:none}
+.section-lead{font-size:1.1rem;line-height:1.8;color:var(--muted);max-width:680px;opacity:0;transform:translateY(20px);transition:all .7s .2s}
+.section-lead.visible{opacity:1;transform:none}
+.divider{width:48px;height:2px;background:var(--gold);margin:2rem 0;opacity:0;transition:all .7s .15s}
+.divider.visible{opacity:1}
+
+/* CAP 1 — GEOMETRIA */
+#geometria{background:var(--cream)}
+.geo-deco{position:absolute;right:-60px;top:80px;opacity:.06;pointer-events:none}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:3rem}
+.card{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:1.8rem;opacity:0;transform:translateY(30px);transition:all .6s}
+.card.visible{opacity:1;transform:none}
+.card:nth-child(2){transition-delay:.1s}
+.card:nth-child(3){transition-delay:.2s}
+.card-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.4rem}
+.card-icon.green{background:#e8f5ee}
+.card-icon.amber{background:#fef3e0}
+.card-icon.blue{background:#e8eef8}
+.card h3{font-family:var(--serif);font-size:1.2rem;font-weight:600;margin-bottom:.6rem}
+.card p{font-size:.9rem;line-height:1.7;color:var(--muted)}
+
+/* VAN HIELE */
+.vanhiele{margin-top:4rem}
+.vanhiele-title{font-family:var(--serif);font-size:1.5rem;font-weight:400;margin-bottom:1.5rem;opacity:0;transform:translateY(20px);transition:all .7s .3s}
+.vanhiele-title.visible{opacity:1;transform:none}
+.levels{display:flex;flex-direction:column;gap:.8rem}
+.level{display:flex;align-items:center;gap:1.2rem;padding:1rem 1.4rem;background:#fff;border-radius:8px;border-left:3px solid transparent;opacity:0;transform:translateX(-20px);transition:all .5s}
+.level.visible{opacity:1;transform:none}
+.level:nth-child(1){border-color:#9fc5e8;transition-delay:.1s}
+.level:nth-child(2){border-color:#6aa84f;transition-delay:.2s}
+.level:nth-child(3){border-color:#e6b840;transition-delay:.3s}
+.level:nth-child(4){border-color:#e06b3a;transition-delay:.4s}
+.level:nth-child(5){border-color:#8e44ad;transition-delay:.5s}
+.level-num{font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--muted);min-width:28px}
+.level-name{font-weight:500;font-size:.9rem}
+.level-desc{font-size:.8rem;color:var(--muted);margin-top:.2rem}
+
+/* CAP 2 — CREATIVITÀ */
+#creativita{background:var(--ink);color:#fff}
+#creativita .section-label{color:var(--gold-light)}
+#creativita .section-title{color:#fff}
+#creativita .section-lead{color:rgba(255,255,255,.55)}
+#creativita .divider{background:var(--gold-light)}
+
+.papert-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:2.5rem;margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;opacity:0;transform:translateY(30px);transition:all .7s .2s}
+.papert-box.visible{opacity:1;transform:none}
+.papert-quote{font-family:var(--serif);font-size:1.25rem;font-style:italic;color:rgba(255,255,255,.85);line-height:1.6;border-left:2px solid var(--gold);padding-left:1.5rem}
+.papert-info h3{font-family:var(--serif);font-size:1.3rem;font-weight:400;color:#fff;margin-bottom:.8rem}
+.papert-info p{font-size:.85rem;color:rgba(255,255,255,.55);line-height:1.7}
+
+/* 4P MODEL */
+.fourp{margin-top:4rem}
+.fourp-title{font-family:var(--serif);font-size:1.5rem;color:#fff;font-weight:300;margin-bottom:2rem;opacity:0;transform:translateY(20px);transition:all .7s .3s}
+.fourp-title.visible{opacity:1;transform:none}
+.fourp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.p-card{padding:1.8rem;border-radius:12px;border:1px solid rgba(255,255,255,.1);opacity:0;transform:translateY(25px);transition:all .5s}
+.p-card.visible{opacity:1;transform:none}
+.p-card:nth-child(1){background:rgba(200,134,10,.12);border-color:rgba(200,134,10,.25);transition-delay:.1s}
+.p-card:nth-child(2){background:rgba(45,106,79,.2);border-color:rgba(45,106,79,.35);transition-delay:.2s}
+.p-card:nth-child(3){background:rgba(176,74,42,.15);border-color:rgba(176,74,42,.3);transition-delay:.3s}
+.p-card:nth-child(4){background:rgba(142,68,173,.12);border-color:rgba(142,68,173,.25);transition-delay:.4s}
+.p-letter{font-family:var(--serif);font-size:3rem;font-weight:700;line-height:1;margin-bottom:.5rem}
+.p-card:nth-child(1) .p-letter{color:var(--gold-light)}
+.p-card:nth-child(2) .p-letter{color:#74c69d}
+.p-card:nth-child(3) .p-letter{color:#e08060}
+.p-card:nth-child(4) .p-letter{color:#c39bd3}
+.p-word{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.8rem}
+.p-desc{font-size:.85rem;color:rgba(255,255,255,.65);line-height:1.65}
+
+/* SPIRALE */
+.spiral-section{margin-top:4rem;text-align:center;opacity:0;transform:translateY(30px);transition:all .7s .4s}
+.spiral-section.visible{opacity:1;transform:none}
+.spiral-svg{max-width:400px;margin:0 auto}
+.spiral-label{fill:rgba(255,255,255,.8);font-family:'DM Sans',sans-serif;font-size:11px}
+
+/* CAP 3 — PROGETTAZIONE */
+#progettazione{background:var(--cream-dark)}
+.methods-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.2rem;margin-top:3rem}
+.method-item{display:flex;gap:1rem;align-items:flex-start;padding:1.2rem;background:#fff;border-radius:10px;opacity:0;transform:translateY(20px);transition:all .5s}
+.method-item.visible{opacity:1;transform:none}
+.method-item:nth-child(2){transition-delay:.08s}
+.method-item:nth-child(3){transition-delay:.16s}
+.method-item:nth-child(4){transition-delay:.24s}
+.method-item:nth-child(5){transition-delay:.32s}
+.method-item:nth-child(6){transition-delay:.4s}
+.method-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);margin-top:.35rem;flex-shrink:0}
+.method-item h4{font-size:.9rem;font-weight:500;margin-bottom:.3rem}
+.method-item p{font-size:.8rem;color:var(--muted);line-height:1.6}
+
+.valutazione-block{margin-top:4rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
+.val-graphic{display:flex;flex-direction:column;gap:.8rem;opacity:0;transform:translateX(-30px);transition:all .7s .3s}
+.val-graphic.visible{opacity:1;transform:none}
+.val-row{display:flex;align-items:center;gap:1rem}
+.val-bar-wrap{flex:1;background:var(--cream);border-radius:20px;height:8px;overflow:hidden}
+.val-bar{height:100%;border-radius:20px;transform:scaleX(0);transform-origin:left;transition:transform 1s}
+.val-bar.visible{transform:scaleX(1)}
+.val-label{font-size:.8rem;color:var(--muted);min-width:160px}
+.val-bar.v1{background:var(--sage);width:95%}
+.val-bar.v2{background:var(--gold);width:80%}
+.val-bar.v3{background:var(--terracotta);width:65%}
+.val-text{opacity:0;transform:translateX(30px);transition:all .7s .3s}
+.val-text.visible{opacity:1;transform:none}
+.val-text h3{font-family:var(--serif);font-size:1.4rem;font-weight:400;margin-bottom:1rem}
+.val-text p{font-size:.9rem;color:var(--muted);line-height:1.75}
+
+/* OCSE STATS */
+#dati{background:#fff;padding:5rem 2rem}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:3rem}
+.stat-block{text-align:center;padding:2rem;border-radius:12px;background:var(--cream);opacity:0;transform:translateY(30px);transition:all .6s}
+.stat-block.visible{opacity:1;transform:none}
+.stat-block:nth-child(2){transition-delay:.1s}
+.stat-block:nth-child(3){transition-delay:.2s}
+.stat-num{font-family:var(--serif);font-size:3rem;font-weight:700;color:var(--ink);line-height:1}
+.stat-num.red{color:var(--terracotta)}
+.stat-num.green{color:var(--sage)}
+.stat-unit{font-size:1rem;color:var(--muted)}
+.stat-label{font-size:.8rem;color:var(--muted);margin-top:.5rem;line-height:1.5}
+
+/* CONCLUSIONI */
+#conclusioni{background:var(--ink);color:#fff;text-align:center}
+#conclusioni .section-label{color:var(--gold-light)}
+#conclusioni .section-title{color:#fff;max-width:760px;margin:0 auto 1.5rem}
+#conclusioni .section-lead{color:rgba(255,255,255,.55);margin:0 auto}
+.conclusion-quote{font-family:var(--serif);font-size:1.4rem;font-style:italic;color:rgba(255,255,255,.8);max-width:700px;margin:3rem auto;line-height:1.7;opacity:0;transform:translateY(25px);transition:all .7s .3s}
+.conclusion-quote.visible{opacity:1;transform:none}
+.conclusion-quote::before,.conclusion-quote::after{content:'"';font-size:3rem;color:var(--gold);opacity:.3;display:block;line-height:.5}
+.conclusion-quote::after{content:'"'}
+footer{background:rgba(0,0,0,.4);padding:2rem;text-align:center;font-size:.75rem;color:rgba(255,255,255,.3);letter-spacing:.1em}
+
+/* ANIMATIONS */
+@keyframes floatIn{from{opacity:0;transform:scale(.5) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(6px)}}
+@keyframes rotate-slow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes spin-slow{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-600}}
+
+.shape-spin{animation:rotate-slow 20s linear infinite;transform-origin:center}
+.shape-spin-r{animation:rotate-slow 25s linear infinite reverse;transform-origin:center}
+
+/* RESPONSIVE */
+@media(max-width:680px){
+  .papert-box{grid-template-columns:1fr}
+  .valutazione-block{grid-template-columns:1fr}
+  nav .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS -->
+<div class="progress-bar" id="progress"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <span class="nav-logo">Tesi di Laurea · Diana Leone</span>
+  <ul class="nav-links">
+    <li><a href="#geometria">Geometria</a></li>
+    <li><a href="#creativita">Creatività</a></li>
+    <li><a href="#progettazione">Progettazione</a></li>
+    <li><a href="#conclusioni">Conclusioni</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-shapes" aria-hidden="true">
+    <svg width="100%" height="100%" style="position:absolute;inset:0">
+      <!-- Geometric floating decorations -->
+      <circle cx="12%" cy="20%" r="120" fill="none" stroke="rgba(200,134,10,.12)" stroke-width="1" class="shape-spin"/>
+      <circle cx="12%" cy="20%" r="80" fill="none" stroke="rgba(200,134,10,.08)" stroke-width="1" class="shape-spin-r"/>
+      <polygon points="88%,15% calc(88% + 80px),calc(15% + 140px) calc(88% - 80px),calc(15% + 140px)" fill="none" stroke="rgba(176,74,42,.12)" stroke-width="1" class="shape-spin"/>
+      <rect x="75%" y="65%" width="160" height="160" rx="8" fill="none" stroke="rgba(240,192,64,.08)" stroke-width="1" class="shape-spin-r" transform-origin="75% 65%"/>
+      <circle cx="25%" cy="75%" r="60" fill="none" stroke="rgba(45,106,79,.1)" stroke-width="1" class="shape-spin"/>
+      <!-- Grid dots -->
+      <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+        <circle cx="20" cy="20" r="1" fill="rgba(255,255,255,.06)"/>
+      </pattern>
+      <rect width="100%" height="100%" fill="url(#dots)"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">Link Campus University · A.A. 202… – 202…</div>
+    <h1>L'approccio dell'<em>apprendimento creativo</em><br>nella didattica della Geometria</h1>
+    <div class="hero-meta">
+      Analisi del quadro teorico e indicazioni per una progettazione nella Scuola Primaria<br>
+      <span>Candidata: Diana Leone</span> · Matr. 2010093 · Relatore: Prof.ssa Maria Beatrice Rapaccini
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-arrow"></div>
+      Scorri
+    </div>
+  </div>
+</section>
+
+<!-- CAP 1: GEOMETRIA -->
+<section id="geometria">
+  <div class="container">
+    <p class="section-label reveal">Capitolo 1</p>
+    <h2 class="section-title reveal">La Geometria nella<br>Scuola Primaria</h2>
+    <div class="divider reveal"></div>
+    <p class="section-lead reveal">La geometria non è solo un corpus di formule: è uno strumento di lettura della realtà. Educa alla razionalizzazione dello spazio e funge da ponte tra percezione sensoriale e pensiero astratto.</p>
+
+    <div class="cards-grid" style="margin-top:3rem">
+      <div class="card reveal">
+        <div class="card-icon green">⬡</div>
+        <h3>Importanza Storica</h3>
+        <p>Per oltre due millenni la geometria ha rappresentato il nucleo del pensiero matematico, dalla sistematizzazione euclidea al portale dell'Accademia di Platone. La sua genesi nella "misura della terra" la lega indissolubilmente all'esperienza sensibile.</p>
+      </div>
+      <div class="card reveal">
+        <div class="card-icon amber">◯</div>
+        <h3>Misconcezioni</h3>
+        <p>Le misconcezioni non sono errori casuali ma <em>cause sensate</em> di errori: esiti di una conoscenza in costruzione. Distinguiamo tra inevitabili (legate alla cognizione del bambino) ed evitabili (generate da scelte didattiche inappropriate).</p>
+      </div>
+      <div class="card reveal">
+        <div class="card-icon blue">△</div>
+        <h3>Indicazioni Nazionali</h3>
+        <p>Le IN 2012/2018 e le Nuove Indicazioni 2025 collocano la geometria come nucleo portante nell'area logico-matematica e tecnologica, con un approccio STEM integrato che valorizza software di geometria dinamica e cartografia digitale.</p>
+      </div>
+    </div>
+
+    <!-- VAN HIELE -->
+    <div class="vanhiele">
+      <h3 class="vanhiele-title reveal">I cinque livelli di Van Hiele</h3>
+      <div class="levels">
+        <div class="level reveal"><span class="level-num">0</span><div><div class="level-name">Visivo</div><div class="level-desc">Riconosce le forme per l'aspetto globale. «È un rettangolo perché sembra una porta.»</div></div></div>
+        <div class="level reveal"><span class="level-num">1</span><div><div class="level-name">Descrittivo-Analitico</div><div class="level-desc">Identifica le proprietà delle figure senza metterle ancora in relazione logica.</div></div></div>
+        <div class="level reveal"><span class="level-num">2</span><div><div class="level-name">Deduzione Informale</div><div class="level-desc">Stabilisce connessioni logiche tra classi di figure e inizia a usare definizioni specifiche.</div></div></div>
+        <div class="level reveal"><span class="level-num">3</span><div><div class="level-name">Deduttivo</div><div class="level-desc">Comprende teoremi, postulati e dimostrazioni formali. Tipico della scuola secondaria.</div></div></div>
+        <div class="level reveal"><span class="level-num">4</span><div><div class="level-name">Del Rigore</div><div class="level-desc">Confronta sistemi assiomatici diversi, incluse le geometrie non-euclidee.</div></div></div>
+      </div>
+    </div>
+  </div>
+  <!-- deco -->
+  <svg class="geo-deco" width="400" height="400" viewBox="0 0 400 400" aria-hidden="true">
+    <circle cx="200" cy="200" r="180" fill="none" stroke="currentColor" stroke-width="1"/>
+    <circle cx="200" cy="200" r="120" fill="none" stroke="currentColor" stroke-width="1"/>
+    <circle cx="200" cy="200" r="60" fill="none" stroke="currentColor" stroke-width="1"/>
+    <line x1="20" y1="200" x2="380" y2="200" stroke="currentColor" stroke-width="1"/>
+    <line x1="200" y1="20" x2="200" y2="380" stroke="currentColor" stroke-width="1"/>
+  </svg>
+</section>
+
+<!-- DATI OCSE -->
+<section id="dati" style="padding:5rem 2rem">
+  <div class="container">
+    <p class="section-label reveal">Dati OCSE-PISA 2022</p>
+    <h2 class="section-title reveal">Il pensiero creativo<br>in Italia</h2>
+    <div class="divider reveal"></div>
+    <p class="section-lead reveal">Per la prima volta il Rapporto PISA 2022 ha valutato il pensiero creativo come capacità di generare, valutare e perfezionare idee originali ed efficaci.</p>
+    <div class="stats-row">
+      <div class="stat-block reveal">
+        <div class="stat-num red">31</div>
+        <div class="stat-unit">punti</div>
+        <div class="stat-label">Punteggio medio<br>degli studenti italiani</div>
+      </div>
+      <div class="stat-block reveal">
+        <div class="stat-num">33</div>
+        <div class="stat-unit">punti</div>
+        <div class="stat-label">Media OCSE<br>di riferimento</div>
+      </div>
+      <div class="stat-block reveal">
+        <div class="stat-num" style="color:var(--gold)">−2</div>
+        <div class="stat-unit">punti</div>
+        <div class="stat-label">Distanza dalla media:<br>gap da colmare</div>
+      </div>
+    </div>
+    <p class="section-lead reveal" style="margin-top:2rem">Il dato più critico non è numerico, ma qualitativo: gli studenti italiani mostrano difficoltà nei compiti <em>aperti</em> che richiedono flessibilità cognitiva, e in ambito geometrico faticano a osservare una figura sotto diverse prospettive.</p>
+  </div>
+</section>
+
+<!-- CAP 2: CREATIVITÀ -->
+<section id="creativita">
+  <div class="container">
+    <p class="section-label reveal">Capitolo 2</p>
+    <h2 class="section-title reveal">L'Apprendimento<br>Creativo</h2>
+    <div class="divider reveal"></div>
+    <p class="section-lead reveal">La creatività non è un dono innato riservato a pochi: è una competenza cognitiva ed emotiva che può — e deve — essere coltivata a scuola. Dewey, Gardner, Piaget e Papert convergono su questo punto.</p>
+
+    <!-- PAPERT -->
+    <div class="papert-box reveal">
+      <div class="papert-quote">
+        «Il bambino, anche d'età prescolare, padroneggia la macchina. Insegnando all'elaboratore a pensare, i bambini si lanciano in una esplorazione del loro stesso modo di pensare.»
+        <div style="font-size:.8rem;margin-top:1rem;color:rgba(255,255,255,.4);font-style:normal">— Seymour Papert, <em>Mindstorms</em>, 1980</div>
+      </div>
+      <div class="papert-info">
+        <h3>Seymour Papert e il Costruzionismo</h3>
+        <p>Matematico sudafricano (Pretoria, 1928 – 2016), al MIT elabora il costruzionismo partendo da Piaget e Dewey: i bambini non devono essere riempiti di informazioni, ma essere <strong>costruttori attivi</strong> della propria conoscenza.</p>
+        <p style="margin-top:.8rem">Il suo linguaggio LOGO (1967) e il principio dell'artefatto cognitivo anticipano tutta la didattica digitale contemporanea.</p>
+      </div>
+    </div>
+
+    <!-- 4P -->
+    <div class="fourp">
+      <h3 class="fourp-title reveal">Il modello delle 4P — Mitchel Resnick, MIT Media Lab</h3>
+      <div class="fourp-grid">
+        <div class="p-card reveal">
+          <div class="p-letter">P</div>
+          <div class="p-word">Projects · Progetti</div>
+          <div class="p-desc">Si impara meglio creando prodotti significativi: un modello 3D, un fregio geometrico, un'animazione Scratch.</div>
+        </div>
+        <div class="p-card reveal">
+          <div class="p-letter">P</div>
+          <div class="p-word">Peers · Pari</div>
+          <div class="p-desc">La creatività è un atto sociale. Il confronto tra pari trasforma la classe in una comunità di apprendimento.</div>
+        </div>
+        <div class="p-card reveal">
+          <div class="p-letter">P</div>
+          <div class="p-word">Passion · Passione</div>
+          <div class="p-desc">Il coinvolgimento emotivo è il motore della persistenza. La geometria delle traiettorie nel calcio o nei videogiochi accende la curiosità reale.</div>
+        </div>
+        <div class="p-card reveal">
+          <div class="p-letter">P</div>
+          <div class="p-word">Play · Gioco</div>
+          <div class="p-desc">Libertà di sperimentare, sbagliare, smontare e rimontare. L'errore perde la sua connotazione punitiva e diventa un dato sperimentale.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPIRALE -->
+    <div class="spiral-section reveal">
+      <h3 style="font-family:var(--serif);color:#fff;font-size:1.3rem;font-weight:300;margin-bottom:2rem">La Spirale dell'Apprendimento Creativo</h3>
+      <svg viewBox="0 0 400 360" class="spiral-svg" aria-label="Spirale dell'apprendimento creativo di Resnick">
+        <defs>
+          <marker id="arrowW" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="rgba(255,255,255,.4)"/>
+          </marker>
+        </defs>
+        <!-- Spiral path approximate -->
+        <path d="M200,180 Q230,130 260,160 Q290,200 250,230 Q210,260 170,230 Q130,200 140,150 Q150,100 210,90 Q280,80 310,150 Q340,220 290,270 Q240,310 170,290 Q100,270 90,190 Q80,110 160,70"
+              fill="none" stroke="rgba(255,255,255,.12)" stroke-width="40" stroke-linecap="round"/>
+        <path d="M200,180 Q230,130 260,160 Q290,200 250,230 Q210,260 170,230 Q130,200 140,150 Q150,100 210,90 Q280,80 310,150 Q340,220 290,270 Q240,310 170,290 Q100,270 90,190 Q80,110 160,70"
+              fill="none" stroke="rgba(200,134,10,.5)" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrowW)"/>
+        <!-- Labels -->
+        <circle cx="200" cy="180" r="28" fill="rgba(200,134,10,.25)" stroke="rgba(200,134,10,.6)" stroke-width="1.5"/>
+        <text x="200" y="176" text-anchor="middle" class="spiral-label" font-weight="500">Immagina</text>
+        <text x="200" y="190" text-anchor="middle" class="spiral-label" font-size="9" opacity=".6">Imagine</text>
+
+        <circle cx="262" cy="160" r="24" fill="rgba(45,106,79,.3)" stroke="rgba(74,180,120,.6)" stroke-width="1.5"/>
+        <text x="262" y="157" text-anchor="middle" class="spiral-label" font-weight="500">Crea</text>
+        <text x="262" y="170" text-anchor="middle" class="spiral-label" font-size="9" opacity=".6">Create</text>
+
+        <circle cx="250" cy="230" r="24" fill="rgba(176,74,42,.25)" stroke="rgba(220,100,60,.6)" stroke-width="1.5"/>
+        <text x="250" y="227" text-anchor="middle" class="spiral-label" font-weight="500">Gioca</text>
+        <text x="250" y="241" text-anchor="middle" class="spiral-label" font-size="9" opacity=".6">Play</text>
+
+        <circle cx="165" cy="238" r="24" fill="rgba(142,68,173,.25)" stroke="rgba(192,100,220,.6)" stroke-width="1.5"/>
+        <text x="165" y="235" text-anchor="middle" class="spiral-label" font-weight="500">Condividi</text>
+        <text x="165" y="249" text-anchor="middle" class="spiral-label" font-size="9" opacity=".6">Share</text>
+
+        <circle cx="140" cy="165" r="24" fill="rgba(50,100,200,.25)" stroke="rgba(80,140,240,.6)" stroke-width="1.5"/>
+        <text x="140" y="162" text-anchor="middle" class="spiral-label" font-weight="500">Rifletti</text>
+        <text x="140" y="176" text-anchor="middle" class="spiral-label" font-size="9" opacity=".6">Reflect</text>
+      </svg>
+      <p style="font-size:.8rem;color:rgba(255,255,255,.4);margin-top:1rem">Il processo iterativo: ogni giro della spirale raffina e potenzia le idee precedenti</p>
+    </div>
+  </div>
+</section>
+
+<!-- CAP 3: PROGETTAZIONE -->
+<section id="progettazione">
+  <div class="container">
+    <p class="section-label reveal">Capitolo 3</p>
+    <h2 class="section-title reveal">Indicazioni per una<br>Progettazione Didattica</h2>
+    <div class="divider reveal"></div>
+    <p class="section-lead reveal">Da Fröbel ai LEGO, dall'errore come scandalo all'errore come dato sperimentale: progettare per l'apprendimento creativo significa ripensare il setting, la metodologia e soprattutto la valutazione.</p>
+
+    <div class="methods-grid">
+      <div class="method-item reveal">
+        <div class="method-dot"></div>
+        <div><h4>Brainstorming</h4><p>Libera espressione di idee a partire da un problema. Valorizza la creatività collettiva e le potenzialità del gruppo.</p></div>
+      </div>
+      <div class="method-item reveal">
+        <div class="method-dot" style="background:var(--sage)"></div>
+        <div><h4>Circle Time</h4><p>Comunicazione regolata in cerchio. Ogni voce ha spazio: utile per gestire conflitti e costruire comunità.</p></div>
+      </div>
+      <div class="method-item reveal">
+        <div class="method-dot" style="background:var(--terracotta)"></div>
+        <div><h4>Lavori di Gruppo</h4><p>Mixare competenze diverse favorisce la partecipazione attiva di chi è meno motivato.</p></div>
+      </div>
+      <div class="method-item reveal">
+        <div class="method-dot" style="background:#8e44ad"></div>
+        <div><h4>Cooperative Learning</h4><p>Leadership condivisa, interdipendenza positiva. Differente dal semplice lavoro di gruppo.</p></div>
+      </div>
+      <div class="method-item reveal">
+        <div class="method-dot" style="background:#2471a3"></div>
+        <div><h4>Didattica Laboratoriale</h4><p>Spazi fisici equipaggiati per esperienze forti: visite, eventi, progetti. I bambini imparano facendo.</p></div>
+      </div>
+      <div class="method-item reveal">
+        <div class="method-dot" style="background:#1a8a6a"></div>
+        <div><h4>Role Playing</h4><p>Immedesimarsi in ruoli diversi favorisce creatività, cambio di prospettiva e applicazione concreta (es: il supermercato geometrico).</p></div>
+      </div>
+    </div>
+
+    <!-- VALUTAZIONE -->
+    <div class="valutazione-block">
+      <div class="val-graphic reveal">
+        <h3 style="font-family:var(--serif);font-size:1.4rem;font-weight:400;margin-bottom:1.5rem">I tre livelli di feedback<br><em style="font-size:1rem;font-weight:300">(Hattie & Timperley, 2007)</em></h3>
+        <div class="val-row">
+          <span class="val-label">Valutazione dell'apprendimento</span>
+          <div class="val-bar-wrap"><div class="val-bar v1 reveal"></div></div>
+        </div>
+        <div class="val-row">
+          <span class="val-label">Valutazione per l'apprendimento</span>
+          <div class="val-bar-wrap"><div class="val-bar v2 reveal"></div></div>
+        </div>
+        <div class="val-row">
+          <span class="val-label">Valutazione come apprendimento</span>
+          <div class="val-bar-wrap"><div class="val-bar v3 reveal"></div></div>
+        </div>
+        <p style="font-size:.75rem;color:var(--muted);margin-top:1rem">Da sommativa a metacognitiva: l'alunno diventa protagonista attivo del processo valutativo</p>
+      </div>
+      <div class="val-text reveal">
+        <h3>La Valutazione come Apprendimento</h3>
+        <p>Il modello RiProVa (Risultati, Processo, Auto-Valutazione) struttura il feedback su tre livelli progressivi. L'errore non è un fallimento da sanzionare: è una tappa fisiologica che spinge a esplorare percorsi non convenzionali.</p>
+        <p style="margin-top:1rem">Secondo Pellerey, la competenza si articola in tre dimensioni: <strong>oggettiva</strong> (valutazione del docente), <strong>intersoggettiva</strong> (consenso condiviso) e <strong>soggettiva</strong> (autopercezione dell'alunno).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSIONI -->
+<section id="conclusioni">
+  <div class="container">
+    <p class="section-label reveal">Conclusioni</p>
+    <h2 class="section-title reveal">Disegnare non solo figure sul foglio,<br>ma il proprio ruolo nel mondo</h2>
+    <div class="divider reveal" style="margin:1.5rem auto"></div>
+    <p class="section-lead reveal">Integrare l'apprendimento creativo nella didattica della geometria non è un'aggiunta estemporanea: è la modalità stessa con cui il sapere geometrico viene costruito.</p>
+
+    <div class="conclusion-quote reveal">
+      La classe smette di essere un luogo di ricezione passiva per trasformarsi in un laboratorio di scoperta, dove l'immaginazione e la riflessione guidano l'alunno nella risoluzione di problemi reali.
+    </div>
+
+    <div class="cards-grid" style="margin-top:2rem">
+      <div class="card reveal" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff">
+        <div class="card-icon" style="background:rgba(200,134,10,.15)">⟳</div>
+        <h3 style="color:#fff">La Spirale Continua</h3>
+        <p style="color:rgba(255,255,255,.55)">Ogni giro della spirale creativa raffina le idee precedenti. L'apprendimento non è lineare, è iterativo e mai terminato.</p>
+      </div>
+      <div class="card reveal" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff">
+        <div class="card-icon" style="background:rgba(45,106,79,.2)">◈</div>
+        <h3 style="color:#fff">Tecnologia come Mediatore</h3>
+        <p style="color:rgba(255,255,255,.55)">Scratch e la robotica educativa non modernizzano solo la lezione: offrono un ambiente dove i concetti geometrici prendono vita.</p>
+      </div>
+      <div class="card reveal" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff">
+        <div class="card-icon" style="background:rgba(176,74,42,.15)">✦</div>
+        <h3 style="color:#fff">Rigore + Libertà</h3>
+        <p style="color:rgba(255,255,255,.55)">La sfida è coniugare la precisione della geometria con la libertà dell'esplorazione creativa. Solo così si formano menti flessibili e inventive.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Diana Leone · Matr. 2010093 · Link Campus University · Relatore: Prof.ssa Maria Beatrice Rapaccini</p>
+  <p style="margin-top:.5rem;opacity:.5">«L'approccio dell'apprendimento creativo nella didattica della Geometria»</p>
+  <p style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:.7rem;opacity:.45;line-height:1.7">
+    © 2026 Diana Leone · Tutti i diritti riservati.<br>
+    Questo lavoro è distribuito sotto licenza <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.it" style="color:inherit;text-decoration:underline" target="_blank">Creative Commons BY-NC-ND 4.0</a>.<br>
+    La riproduzione, anche parziale, è consentita solo su esplicita autorizzazione scritta dell'autrice.
+  </p>
+</footer>
+
+<script>
+const navbar = document.getElementById('navbar');
+const progress = document.getElementById('progress');
+const navLinks = document.querySelectorAll('.nav-links a');
+const sections = document.querySelectorAll('section[id]');
+
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.body.scrollHeight - window.innerHeight;
+  progress.style.width = (scrolled / total * 100) + '%';
+  navbar.classList.toggle('scrolled', scrolled > 60);
+
+  sections.forEach(sec => {
+    const top = sec.offsetTop - 100;
+    const bottom = top + sec.offsetHeight;
+    if (scrolled >= top && scrolled < bottom) {
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + sec.id);
+      });
+    }
+  });
+});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal, .card, .level, .p-card, .method-item, .stat-block, .papert-box, .val-graphic, .val-text, .conclusion-quote, .vanhiele-title, .fourp-title, .spiral-section, .val-bar').forEach(el => {
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
